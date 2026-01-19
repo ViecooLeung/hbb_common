@@ -75,6 +75,7 @@ pub fn start_cpu_performance_monitor() {
             log::error!("PdhAddEnglishCounterA failed: 0x{:X}", ret);
             return;
         }
+		
         ret = PdhCollectQueryData(query);
         if ret != 0 {
             log::error!("PdhCollectQueryData failed: 0x{:X}", ret);
