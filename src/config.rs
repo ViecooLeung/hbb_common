@@ -105,7 +105,7 @@ const CHARS: &[char] = &[
     '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
     'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 ];
-
+#修改秘钥
 pub const RENDEZVOUS_SERVERS: &[&str] = &["desk.ylcjwl.com"];
 pub const RS_PUB_KEY: &str = "SWkcLr7U7PB1GC7DUnwTcql3AAuNt6+q39NRUOrQebQ=";
 
@@ -1002,33 +1002,6 @@ impl Config {
             .unwrap_or(false)
     }
 
-    pub fn is_disable_change_permanent_password() -> bool {
-        BUILTIN_SETTINGS
-            .read()
-            .unwrap()
-            .get(keys::OPTION_DISABLE_CHANGE_PERMANENT_PASSWORD)
-            .map(|v| v == "Y")
-            .unwrap_or(false)
-    }
-
-    pub fn is_disable_change_id() -> bool {
-        BUILTIN_SETTINGS
-            .read()
-            .unwrap()
-            .get(keys::OPTION_DISABLE_CHANGE_ID)
-            .map(|v| v == "Y")
-            .unwrap_or(false)
-    }
-
-    pub fn is_disable_unlock_pin() -> bool {
-        BUILTIN_SETTINGS
-            .read()
-            .unwrap()
-            .get(keys::OPTION_DISABLE_UNLOCK_PIN)
-            .map(|v| v == "Y")
-            .unwrap_or(false)
-    }
-
     pub fn get_id() -> String {
         let mut id = CONFIG.read().unwrap().id.clone();
         if id.is_empty() {
@@ -1115,9 +1088,6 @@ impl Config {
     }
 
     pub fn set_permanent_password(password: &str) {
-        if Self::is_disable_change_permanent_password() {
-            return;
-        }
         if HARD_SETTINGS
             .read()
             .unwrap()
@@ -1266,16 +1236,10 @@ impl Config {
     }
 
     pub fn get_unlock_pin() -> String {
-        if Self::is_disable_unlock_pin() {
-            return String::new();
-        }
         CONFIG2.read().unwrap().unlock_pin.clone()
     }
 
     pub fn set_unlock_pin(pin: &str) {
-        if Self::is_disable_unlock_pin() {
-            return;
-        }
         let mut config = CONFIG2.write().unwrap();
         if pin == config.unlock_pin {
             return;
@@ -2656,9 +2620,6 @@ pub mod keys {
     pub const OPTION_ALLOW_HOSTNAME_AS_ID: &str = "allow-hostname-as-id";
     pub const OPTION_HIDE_POWERED_BY_ME: &str = "hide-powered-by-me";
     pub const OPTION_MAIN_WINDOW_ALWAYS_ON_TOP: &str = "main-window-always-on-top";
-    pub const OPTION_DISABLE_CHANGE_PERMANENT_PASSWORD: &str = "disable-change-permanent-password";
-    pub const OPTION_DISABLE_CHANGE_ID: &str = "disable-change-id";
-    pub const OPTION_DISABLE_UNLOCK_PIN: &str = "disable-unlock-pin";
 
     // flutter local options
     pub const OPTION_FLUTTER_REMOTE_MENUBAR_STATE: &str = "remoteMenubarState";
@@ -2683,12 +2644,6 @@ pub mod keys {
 
     // android keep screen on
     pub const OPTION_KEEP_SCREEN_ON: &str = "keep-screen-on";
-
-    // Server-side: keep host system awake during incoming sessions (Security setting)
-    pub const OPTION_KEEP_AWAKE_DURING_INCOMING_SESSIONS: &str = "keep-awake-during-incoming-sessions";
-
-    // Client-side: keep client system awake during outgoing sessions (General setting)  
-    pub const OPTION_KEEP_AWAKE_DURING_OUTGOING_SESSIONS: &str = "keep-awake-during-outgoing-sessions";
 
     pub const OPTION_DISABLE_GROUP_PANEL: &str = "disable-group-panel";
     pub const OPTION_DISABLE_DISCOVERY_PANEL: &str = "disable-discovery-panel";
@@ -2760,8 +2715,6 @@ pub mod keys {
         OPTION_FLOATING_WINDOW_TRANSPARENCY,
         OPTION_FLOATING_WINDOW_SVG,
         OPTION_KEEP_SCREEN_ON,
-        // Client-side: keep client system awake during outgoing sessions (General setting)
-        OPTION_KEEP_AWAKE_DURING_OUTGOING_SESSIONS,
         OPTION_DISABLE_GROUP_PANEL,
         OPTION_DISABLE_DISCOVERY_PANEL,
         OPTION_PRE_ELEVATE_SERVICE,
@@ -2830,7 +2783,6 @@ pub mod keys {
         OPTION_ICE_SERVERS,
         OPTION_DISABLE_UDP,
         OPTION_ALLOW_INSECURE_TLS_FALLBACK,
-        OPTION_KEEP_AWAKE_DURING_INCOMING_SESSIONS,
     ];
 
     // BUILDIN_SETTINGS
@@ -2859,9 +2811,6 @@ pub mod keys {
         OPTION_HIDE_POWERED_BY_ME,
         OPTION_MAIN_WINDOW_ALWAYS_ON_TOP,
         OPTION_FILE_TRANSFER_MAX_FILES,
-        OPTION_DISABLE_CHANGE_PERMANENT_PASSWORD,
-        OPTION_DISABLE_CHANGE_ID,
-        OPTION_DISABLE_UNLOCK_PIN,
     ];
 }
 
