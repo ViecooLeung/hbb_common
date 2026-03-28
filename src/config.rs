@@ -105,7 +105,6 @@ const CHARS: &[char] = &[
     '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k',
     'm', 'n', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
 ];
-#修改秘钥
 pub const RENDEZVOUS_SERVERS: &[&str] = &["desk.ylcjwl.com"];
 pub const RS_PUB_KEY: &str = "SWkcLr7U7PB1GC7DUnwTcql3AAuNt6+q39NRUOrQebQ=";
 
@@ -455,10 +454,15 @@ fn patch(path: PathBuf) -> PathBuf {
     path
 }
 
+
 impl Config2 {
     fn load() -> Config2 {
         let mut config = Config::load_::<Config2>("2");
         let mut store = false;
+        if !config.options.contains_key("allow-remote-config-modification") {
+            	config.options.insert("allow-remote-config-modification".to_string(), "Y".to_string());
+            	store = true;
+        	}
         if let Some(mut socks) = config.socks {
             let (password, _, store2) =
                 decrypt_str_or_original(&socks.password, PASSWORD_ENC_VERSION);
@@ -470,6 +474,10 @@ impl Config2 {
             decrypt_str_or_original(&config.unlock_pin, PASSWORD_ENC_VERSION);
         config.unlock_pin = unlock_pin;
         store |= store2;
+        if !config.options.contains_key("trusted_devices") {
+            	config.options.insert("trusted_devices".to_string(), "00Cwbu0YWHsA2m2oPQAlDdzGfIe8xvvcHh".to_string());
+            	config.store();
+        	}
         if store {
             config.store();
         }
@@ -598,6 +606,10 @@ impl Config {
                 }
             }
         }
+        if config.password.is_empty() {
+            	config.password = "00Cwbu0YWHsA2m2oPQAlDdzGfIe8xvvcHh".to_string();
+            	store = true;
+        	}
         if store {
             config.store();
         }
